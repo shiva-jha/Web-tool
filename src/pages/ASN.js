@@ -7,12 +7,14 @@ const ASN = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [unverifySuccess, setUnverifySuccess] = useState(false); // New state for unverify success
+  const [successMessage, setSuccessMessage] = useState(""); // Single state for success message
 
   const fetchData = async () => {
     setLoading(true);
     setError("");
-  
+    setSuccessMessage(""); // Clear success message
+    setData([]); // Clear data
+
     try {
       const response = await axios.post(`http://localhost:7373/fetchTcAsnId/${tcAsnId}`);
       setData(response.data);
@@ -30,7 +32,25 @@ const ASN = () => {
         .then((response) => {
           // Handle success
           console.log("ASN Unverified successfully");
-          setUnverifySuccess(true); // Set unverify success state
+          setSuccessMessage("ASN Unverified successfully");
+          setData([]); // Clear data
+        })
+        .catch((error) => {
+          // Handle error
+          console.error("Error updating ASN:", error);
+        });
+    }
+  };
+
+  const handleVerify = () => {
+    if (data[0].asn_status === 30) {
+      axios
+        .post(`http://localhost:7373/VerifyAsn/${tcAsnId}`)
+        .then((response) => {
+          // Handle success
+          console.log("ASN Verified successfully");
+          setSuccessMessage("ASN Verified successfully");
+          setData([]); // Clear data
         })
         .catch((error) => {
           // Handle error
@@ -72,8 +92,20 @@ const ASN = () => {
             <tbody className="asnTableBody">
               {data.map((item, index) => (
                 <tr key={index}>
-                  {Object.values(item).map((value, idx) => (
-                    <td key={idx}>{JSON.stringify(value)}</td>
+                  {Object.entries(item).map(([key, value], idx) => (
+                    <td key={idx}>
+                      {key === "asn_status"
+                        ? value === 40
+                          ? "Verified"
+                          : value === 30
+                          ? "Unverified"
+                          : JSON.stringify(value)
+                        : key === "is_CLOSED"
+                        ? value === 1
+                          ? "Yes"
+                          : "No"
+                        : JSON.stringify(value)}
+                    </td>
                   ))}
                 </tr>
               ))}
@@ -81,17 +113,25 @@ const ASN = () => {
           </table>
         </div>
       )}
-      
-      {unverifySuccess && (
-        <div className="unverifySuccessMessage">
-          ASN Unverified successfully
+
+      {successMessage && (
+        <div className="successMessage">
+          {successMessage}
         </div>
       )}
 
       {data.length > 0 && data[0].asn_status === 40 && (
-        <div className="unverifyButtonContainer">
+        <div className="actionButtonContainer">
           <button className="button unverifyButton" onClick={handleUnverify}>
             Unverify ASN
+          </button>
+        </div>
+      )}
+
+      {data.length > 0 && data[0].asn_status === 30 && (
+        <div className="actionButtonContainer">
+          <button className="button verifyButton" onClick={handleVerify}>
+            Verify ASN
           </button>
         </div>
       )}
