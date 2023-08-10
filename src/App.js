@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Login from "./pages/Login";
 
-
-import ASN from "./pages/ASN";
- 
+import Register from "./pages/Register";
 
 function App() {
   return (
     <div className="App">
-     <ASN/>
-     {/* <h2>Hello</h2> */}
+      <Register />
+      {/* <Login /> */}
     </div>
   );
 }
-
-
 export default App;
