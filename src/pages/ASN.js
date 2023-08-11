@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./asn.css";
+import formatHeader from '../Components/HeaderFormatter';
+import RemoveDoubleQuotes from "../Components/RemoveDoubleQuote";
 
 const ASN = () => {
   const [tcAsnId, setTcAsnId] = useState("");
@@ -85,7 +87,7 @@ const ASN = () => {
             <thead>
               <tr>
                 {Object.keys(data[0]).map((key) => (
-                  <th key={key}>{key}</th>
+                  <th key={key}>{formatHeader(key)}</th>
                 ))}
               </tr>
             </thead>
@@ -94,7 +96,9 @@ const ASN = () => {
                 <tr key={index}>
                   {Object.entries(item).map(([key, value], idx) => (
                     <td key={idx}>
-                      {key === "asn_status"
+                       {key === "tc_asn_id"
+                        ? <RemoveDoubleQuotes value={value} />
+                        : key === "asn_status"
                         ? value === 40
                           ? "Verified"
                           : value === 30

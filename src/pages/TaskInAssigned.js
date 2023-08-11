@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import formatHeader from '../Components/HeaderFormatter';
+import RemoveDoubleQuotes from '../Components/RemoveDoubleQuote';
+import "./TaskInAssigned.css";
 
 function TaskInAssigned() {
   const [taskId, setTaskId] = useState('');
@@ -38,7 +41,7 @@ function TaskInAssigned() {
     taskDtlResult.every((item) => item.misc_alpha_field_2 === null);
 
 
-
+// console.log(RemoveDoubleQuotes("E1 AS1 Ecom Letdown"));
     const handleReleaseTask = () => {
         
           axios
@@ -56,18 +59,18 @@ function TaskInAssigned() {
         
       };
   return (
-    <div>
-      <h1>Task Fetcher</h1>
+    <div className="container task-in-assigned-container">
+      <h1 className="heading">Task Fetcher</h1>
       <input
         type="text"
+        className="input-field task-input"
         placeholder="Enter Task ID"
         value={taskId}
         onChange={(e) => setTaskId(e.target.value)}
       />
-      <button onClick={handleFetch} disabled={loading}>
+      <button className=" button fetch-button" onClick={handleFetch} disabled={loading}>
         {loading ? 'Fetching...' : 'Fetch Result'}
       </button>
-     
       {taskHdrResult && (
   <div>
     <h2>Task Header Result</h2>
@@ -76,23 +79,28 @@ function TaskInAssigned() {
         <thead>
           <tr>
             {Object.keys(taskHdrResult[0]).map((key) => (
-              <th key={key}>{key}</th>
+              <th key={key}>{formatHeader(key)}</th>
             ))}
             <th>Task Status</th>
+            <th>Tote No</th> 
           </tr>
         </thead>
         <tbody className="taskHdrTableBody">
-          {taskHdrResult.map((item, index) => (
-            <tr key={index}>
-              {Object.entries(item).map(([key, value], idx) => (
-                <td key={idx}>{JSON.stringify(value)}</td>
-              ))}
-               <td key={"task status"}>
-                {item.stat_code === 30 ? 'Assigned' : item.stat_code === 10 ? 'Released' : item.stat_code === 99 ? 'Cancelled' : ''}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                {taskHdrResult.map((item, index) => (
+                  <tr key={index}>
+                    {Object.entries(item).map(([key, value], idx) => (
+                      <td key={idx}>
+                        {key === 'task_desc' || key === 'task_genrtn_ref_nbr'
+                          ? <RemoveDoubleQuotes value={value} />
+                          : JSON.stringify(value)}
+                      </td>
+                    ))}
+                    <td key={"task status"}>
+                      {item.stat_code === 30 ? 'Assigned' : item.stat_code === 10 ? 'Released' : item.stat_code === 99 ? 'Cancelled' : ''}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
       </table>
         </div>
 
@@ -102,7 +110,7 @@ function TaskInAssigned() {
         </div>
       )}
         {shouldRenderButton && (
-        <button  onClick={handleReleaseTask}>
+        <button  className=" button PerformTask-button"  onClick={handleReleaseTask}>
           Perform Action
         </button>
       )}
