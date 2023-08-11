@@ -8,16 +8,16 @@
 
 html {
   font-family: "Nunito", sans-serif;
-  font-size: 22px;
-  color: #fff;
+  /* font-size: 22px; */
+  /* color: #fff; */
 }
 
 body {
   min-height: 100vh;
-  background-color: dodgerblue;
+  background-color: rgb(94, 105, 116);
 }
 
-.App {
+/* .App {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,13 +74,13 @@ button {
   font-size: 0.75rem;
   border-radius: 0.5rem;
   background: #000;
-  color: #fff;
-  padding: 0.25rem;
+  /* color: #fff; */
+  /* padding: 0.25rem;
   position: relative;
   bottom: -10px;
-}
+} */
 
-.instructions > svg {
+/* .instructions > svg {
   margin-right: 0.25rem;
 }
 
@@ -113,7 +113,7 @@ button {
 
 .line {
   display: inline-block;
-}
+} */ */
 
 body {
   margin: 0;

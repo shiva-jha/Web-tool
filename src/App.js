@@ -1,14 +1,28 @@
-import React from "react";
-import Login from "./pages/Login";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-import Register from "./pages/Register";
+import Home from './Components/Home'; // Import the Home component
+import ASN from './pages/ASN'; // Import the ASN component
+import TaskInAssigned from './pages/TaskInAssigned'; // Import the TaskInAssigned component
+import Login from './pages/Login'; // Import the Login component
+import Register from './pages/Register'; // Import the Register component
+// import Layout from './Components/Layout'; // Import the Layout component (if you have one)
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <Register />
-      {/* <Login /> */}
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/ASN" element={<ASN />} />
+          <Route path="/TaskInAssigned" element={<TaskInAssigned />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
+
 export default App;
