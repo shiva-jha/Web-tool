@@ -14,6 +14,9 @@ function Home() {
           <Link to="/ToteInConsumed">Tote in Consumed</Link>
         </li>
         <li>
+          <Link to="/OlpnInPacking">Olpn in Packing</Link>
+        </li>
+        <li>
           <Link to="/TaskInAssigned">Task In Assigned Page</Link>
         </li>
        
