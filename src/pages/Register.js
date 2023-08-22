@@ -9,8 +9,8 @@ import axios from "axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const REGISTER_URL = "/registerUser";
+// const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const REGISTER_URL = "http://localhost:7373/api/v1/auth/registerUserJwt";
 
 const Register = () => {
   const userRef = useRef();
@@ -20,9 +20,13 @@ const Register = () => {
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [validFirstName, setValidFirstName] = useState(false);
+  const [firstNameFocus, setFirstNameFocus] = useState(false);
+
+  const [lastName, setLastName] = useState("");
+  const [validLastName, setValidLastName] = useState(false);
+  const [lastNameFocus, setLastNameFocus] = useState(false);
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -44,8 +48,12 @@ const Register = () => {
   }, [user]);
 
   useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(email));
-  }, [email]);
+    setValidFirstName(USER_REGEX.test(firstName));
+  }, [firstName]);
+
+  useEffect(() => {
+    setValidLastName(USER_REGEX.test(lastName));
+  }, [lastName]);
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
@@ -54,22 +62,21 @@ const Register = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, email, pwd, matchPwd]);
+  }, [user, firstName, lastName, pwd, matchPwd]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if button enabled with JS hack
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
-    const v3 = EMAIL_REGEX.test(email);
-    if (!v1 || !v2 || !v3) {
+    if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
       return;
     }
     try {
       const response = await axios.post(
         REGISTER_URL,
-        JSON.stringify({ user, email, pwd }),
+        JSON.stringify({ user, firstName, lastName, pwd }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -83,7 +90,8 @@ const Register = () => {
       //need value attrib on inputs for this
       setUser("");
       setPwd("");
-      setEmail("");
+      setFirstName("");
+      setLastName("");
       setMatchPwd("");
     } catch (err) {
       if (!err?.response) {
@@ -118,7 +126,7 @@ const Register = () => {
           <h1>Lululemon DC Support</h1>
           <form onSubmit={handleSubmit}>
             <label htmlFor="username">
-              Enter WMUsername:
+              Enter WM Username:
               <FontAwesomeIcon
                 icon={faCheck}
                 className={validName ? "valid" : "hide"}
@@ -156,32 +164,70 @@ const Register = () => {
             </p>
 
             {/* Email */}
-            <label htmlFor="email">
-              Enter Email:
+            <label htmlFor="firstName">
+              Enter First Name:
               <FontAwesomeIcon
                 icon={faCheck}
-                className={validEmail ? "valid" : "hide"}
+                className={validFirstName ? "valid" : "hide"}
               />
               <FontAwesomeIcon
                 icon={faTimes}
-                className={validEmail || !email ? "hide" : "invalid"}
+                className={validFirstName || !firstName ? "hide" : "invalid"}
               />
             </label>
             <input
-              type="email"
-              id="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              type="text"
+              id="firstName"
+              onChange={(e) => setFirstName(e.target.value)}
+              value={firstName}
               required
-              aria-invalid={validEmail ? "false" : "true"}
-              aria-describedby="emailnote"
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
+              aria-invalid={validFirstName ? "false" : "true"}
+              aria-describedby="firstNameNote"
+              onFocus={() => setFirstNameFocus(true)}
+              onBlur={() => setFirstNameFocus(false)}
             />
             <p
-              id="emailnote"
+              id="firstNameNote"
               className={
-                emailFocus && email && !validEmail
+                firstNameFocus && firstName && !validFirstName
+                  ? "instructions"
+                  : "offscreen"
+              }
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+              Ex. johndoe@example.com
+              <br />
+              Letters, numbers, underscores, hyphens allowed.
+            </p>
+
+            {/* lastName */}
+
+            <label htmlFor="lastName">
+              Enter Last Name:
+              <FontAwesomeIcon
+                icon={faCheck}
+                className={validLastName ? "valid" : "hide"}
+              />
+              <FontAwesomeIcon
+                icon={faTimes}
+                className={validLastName || !lastName ? "hide" : "invalid"}
+              />
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              onChange={(e) => setLastName(e.target.value)}
+              value={lastName}
+              required
+              aria-invalid={validLastName ? "false" : "true"}
+              aria-describedby="lastNamenote"
+              onFocus={() => setLastNameFocus(true)}
+              onBlur={() => setLastNameFocus(false)}
+            />
+            <p
+              id="lastNamenote"
+              className={
+                lastNameFocus && lastName && !validLastName
                   ? "instructions"
                   : "offscreen"
               }

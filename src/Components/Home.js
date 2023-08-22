@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import "./home.css";
 
 function Home() {
@@ -19,13 +19,13 @@ function Home() {
         <li>
           <Link to="/TaskInAssigned">Task In Assigned Page</Link>
         </li>
-       
-        {/* <li>
+        /*{" "}
+        <li>
           <Link to="/Login">Login Page</Link>
         </li>
         <li>
           <Link to="/Register">Register Page</Link>
-        </li> */}
+        </li>
       </ul>
     </div>
   );
