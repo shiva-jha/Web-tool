@@ -6,11 +6,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import "./Login.css";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const REGISTER_URL = "/loginUser";
+const LOGIN_URL = "http://localhost:7373/api/v1/auth/authenticate";
 
 const Login = () => {
   const userRef = useRef();
@@ -20,17 +20,9 @@ const Login = () => {
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
-
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
-
-  const [matchPwd, setMatchPwd] = useState("");
-  const [validMatch, setValidMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -44,32 +36,26 @@ const Login = () => {
   }, [user]);
 
   useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(email));
-  }, [email]);
-
-  useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
-    setValidMatch(pwd === matchPwd);
-  }, [pwd, matchPwd]);
+  }, [pwd]);
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, email, pwd, matchPwd]);
+  }, [user, pwd]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if button enabled with JS hack
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
-    const v3 = EMAIL_REGEX.test(email);
     if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
       return;
     }
     try {
       const response = await axios.post(
-        REGISTER_URL,
-        JSON.stringify({ user, email, pwd }),
+        LOGIN_URL,
+        JSON.stringify({ user, pwd }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -83,8 +69,6 @@ const Login = () => {
       //need value attrib on inputs for this
       setUser("");
       setPwd("");
-      setEmail("");
-      setMatchPwd("");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -118,7 +102,7 @@ const Login = () => {
           <h1>Lululemon DC Support</h1>
           <form onSubmit={handleSubmit}>
             <label htmlFor="username">
-              Enter WMUsername:
+              Enter WM Username:
               <FontAwesomeIcon
                 icon={faCheck}
                 className={validName ? "valid" : "hide"}

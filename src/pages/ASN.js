@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./asn.css";
-import formatHeader from '../Components/HeaderFormatter';
+import formatHeader from "../Components/HeaderFormatter";
 import RemoveDoubleQuotes from "../Components/RemoveDoubleQuote";
 
 const ASN = () => {
@@ -18,7 +18,17 @@ const ASN = () => {
     setData([]); // Clear data
 
     try {
-      const response = await axios.post(`http://localhost:7373/fetchTcAsnId/${tcAsnId}`);
+      const response = await axios.post(
+        `http://localhost:7373/fetchTcAsnId/${tcAsnId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            JwtToken:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0VXNlcjIiLCJpYXQiOjE2OTI2Mjc3MTMsImV4cCI6MTY5MjYzMTMxM30._jb2CaeJmI442DMMO5MuWKTn13xfKSSM44zpTba3LYw",
+          },
+          withCredentials: true,
+        }
+      );
       setData(response.data);
     } catch (error) {
       setError("Error fetching data from the ASN Table");
@@ -96,19 +106,25 @@ const ASN = () => {
                 <tr key={index}>
                   {Object.entries(item).map(([key, value], idx) => (
                     <td key={idx}>
-                       {key === "tc_asn_id"
-                        ? <RemoveDoubleQuotes value={value} />
-                        : key === "asn_status"
-                        ? value === 40
-                          ? "Verified"
-                          : value === 30
-                          ? "Unverified"
-                          : JSON.stringify(value)
-                        : key === "is_CLOSED"
-                        ? value === 1
-                          ? "Yes"
-                          : "No"
-                        : JSON.stringify(value)}
+                      {key === "tc_asn_id" ? (
+                        <RemoveDoubleQuotes value={value} />
+                      ) : key === "asn_status" ? (
+                        value === 40 ? (
+                          "Verified"
+                        ) : value === 30 ? (
+                          "Unverified"
+                        ) : (
+                          JSON.stringify(value)
+                        )
+                      ) : key === "is_CLOSED" ? (
+                        value === 1 ? (
+                          "Yes"
+                        ) : (
+                          "No"
+                        )
+                      ) : (
+                        JSON.stringify(value)
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -118,11 +134,7 @@ const ASN = () => {
         </div>
       )}
 
-      {successMessage && (
-        <div className="successMessage">
-          {successMessage}
-        </div>
-      )}
+      {successMessage && <div className="successMessage">{successMessage}</div>}
 
       {data.length > 0 && data[0].asn_status === 40 && (
         <div className="actionButtonContainer">
