@@ -1,14 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import Home from './Components/Home'; // Import the Home component
-import ASN from './pages/ASN'; // Import the ASN component
-import TaskInAssigned from './pages/TaskInAssigned'; // Import the TaskInAssigned component
-import Login from './pages/Login'; // Import the Login component
-import Register from './pages/Register'; // Import the Register component
-import ToteInConsumed from './pages/ToteInConsumed';
+import Home from "./Components/Home"; // Import the Home component
+import ASN from "./pages/ASN"; // Import the ASN component
+import TaskInAssigned from "./pages/TaskInAssigned"; // Import the TaskInAssigned component
+import Login from "./pages/Login"; // Import the Login component
+import Register from "./pages/Register"; // Import the Register component
+import ToteInConsumed from "./pages/ToteInConsumed";
 // import Layout from './Components/Layout'; // Import the Layout component (if you have one)
-import './App.css';
+import "./App.css";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
           <Route path="/ASN" element={<ASN />} />
           <Route path="/ToteInConsumed" element={<ToteInConsumed />} />
           <Route path="/TaskInAssigned" element={<TaskInAssigned />} />
-          
+          <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
         </Routes>
       </div>
