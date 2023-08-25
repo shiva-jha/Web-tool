@@ -23,7 +23,7 @@ const ASN = () => {
   }, []);
 
   const updateExptime = () => {
-    localStorage.setItem("expireTime", Date.now() + 10000);
+    localStorage.setItem("expireTime", Date.now() + 1000000);
   };
 
   const checkForInactivity = () => {
@@ -62,6 +62,7 @@ const ASN = () => {
     };
   }, []);
 
+  const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
   const fetchData = async () => {
     setLoading(true);
     setError("");
@@ -70,12 +71,12 @@ const ASN = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:7373/api/fetchTcAsnId/${tcAsnId}`,
+        `http://localhost:7373/fetchTcAsnId/${tcAsnId}/${jwtToken}`,
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: false,
+          withCredentials: true,
         }
       );
       setData(response.data);
