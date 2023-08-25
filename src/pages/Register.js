@@ -83,8 +83,9 @@ const Register = () => {
         }
       );
       console.log(response?.data);
-      console.log(response?.accessToken);
+      console.log(response?.jwtToken);
       console.log(JSON.stringify(response));
+      localStorage.setItem("jwtToken", response.data.jwtToken);
       setSuccess(true);
       //clear state and controlled inputs
       //need value attrib on inputs for this
@@ -110,9 +111,7 @@ const Register = () => {
       {success ? (
         <section>
           <h1>Success!</h1>
-          <p>
-            <a href="#">Sign In</a>
-          </p>
+          <p>Sign In</p>
         </section>
       ) : (
         <section>

@@ -7,20 +7,24 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const LOGIN_URL = "http://localhost:7373/api/v1/auth/authenticate";
 
+localStorage.setItem("expireTime", Date.now() + 60000);
+
 const Login = () => {
   const userRef = useRef();
   const errRef = useRef();
+  const navigate = useNavigate();
 
-  const [user, setUser] = useState("");
+  const [userName, setUser] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [pwd, setPwd] = useState("");
+  const [password, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
 
@@ -32,22 +36,22 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    setValidName(USER_REGEX.test(user));
-  }, [user]);
+    setValidName(USER_REGEX.test(userName));
+  }, [userName]);
 
   useEffect(() => {
-    setValidPwd(PWD_REGEX.test(pwd));
-  }, [pwd]);
+    setValidPwd(PWD_REGEX.test(password));
+  }, [password]);
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd]);
+  }, [userName, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if button enabled with JS hack
-    const v1 = USER_REGEX.test(user);
-    const v2 = PWD_REGEX.test(pwd);
+    const v1 = USER_REGEX.test(userName);
+    const v2 = PWD_REGEX.test(password);
     if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
       return;
@@ -55,16 +59,20 @@ const Login = () => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ user, pwd }),
+        JSON.stringify({ userName, password }),
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );
-      console.log(response?.data);
-      console.log(response?.accessToken);
-      console.log(JSON.stringify(response));
+      console.log(response.data);
+      console.log(response.data.jwtToken);
+      localStorage.setItem("jwtToken", response.data.jwtToken);
       setSuccess(true);
+      localStorage.setItem("expireTime", Date.now() + 10000);
+      navigate("/ASN");
       //clear state and controlled inputs
       //need value attrib on inputs for this
       setUser("");
@@ -109,7 +117,7 @@ const Login = () => {
               />
               <FontAwesomeIcon
                 icon={faTimes}
-                className={validName || !user ? "hide" : "invalid"}
+                className={validName || !userName ? "hide" : "invalid"}
               />
             </label>
             <input
@@ -118,7 +126,7 @@ const Login = () => {
               ref={userRef}
               autoComplete="off"
               onChange={(e) => setUser(e.target.value)}
-              value={user}
+              value={userName}
               required
               aria-invalid={validName ? "false" : "true"}
               aria-describedby="uidnote"
@@ -128,7 +136,9 @@ const Login = () => {
             <p
               id="uidnote"
               className={
-                userFocus && user && !validName ? "instructions" : "offscreen"
+                userFocus && userName && !validName
+                  ? "instructions"
+                  : "offscreen"
               }
             >
               <FontAwesomeIcon icon={faInfoCircle} />
@@ -147,14 +157,14 @@ const Login = () => {
               />
               <FontAwesomeIcon
                 icon={faTimes}
-                className={validPwd || !pwd ? "hide" : "invalid"}
+                className={validPwd || !password ? "hide" : "invalid"}
               />
             </label>
             <input
               type="password"
               id="password"
               onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
+              value={password}
               required
               aria-invalid={validPwd ? "false" : "true"}
               aria-describedby="pwdnote"
