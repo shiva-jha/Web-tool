@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
 import Home from "./Components/Home";
 import SignUp from "./pages/SignUp";
@@ -88,7 +95,7 @@ function App() {
               )
             }
           />
-           <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
           {/* Protected routes */}
           <Route
             path="/ASN"
@@ -98,9 +105,11 @@ function App() {
             path="/TaskInAssigned"
             element={authenticated ? <TaskInAssigned /> : <Navigate to="/" />}
           />
-           <Route
+          <Route
             path="/ToteInAllocAndPulled"
-            element={authenticated ? <ToteInAllocAndPulled /> : <Navigate to="/" />}
+            element={
+              authenticated ? <ToteInAllocAndPulled /> : <Navigate to="/" />
+            }
           />
           <Route
             path="/ToteInConsumed"
@@ -110,7 +119,6 @@ function App() {
             path="/OlpnInPacking"
             element={authenticated ? <OlpnInPacking /> : <Navigate to="/" />}
           />
-          
         </Routes>
       </div>
     </Router>

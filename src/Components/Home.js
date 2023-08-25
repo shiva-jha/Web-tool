@@ -9,28 +9,28 @@ function Home({ handleSignOut }) {
     {
       title: "ASN Page",
       content: "View and manage Advanced Shipping Notices.",
-      link: "/ASN"
+      link: "/ASN",
     },
     {
       title: "Tote in Consumed",
       content: "Manage totes that have been consumed.",
-      link: "/ToteInConsumed"
+      link: "/ToteInConsumed",
     },
     {
       title: "Task In AllocaAndPulled",
       content: "Manage tasks .",
-      link: "/ToteInAllocAndPulled"
+      link: "/ToteInAllocAndPulled",
     },
     {
       title: "Olpn in Packing",
       content: "Manage Olpns in Packing process.",
-      link: "/OlpnInPacking"
+      link: "/OlpnInPacking",
     },
     {
       title: "Task In Assigned Page",
       content: "Manage tasks that got stuck in assigned state.",
-      link: "/TaskInAssigned"
-    }
+      link: "/TaskInAssigned",
+    },
     // Add more card data objects as needed
   ];
 

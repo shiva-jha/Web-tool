@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./asn.css";
 import formatHeader from "../Components/HeaderFormatter";
 import RemoveDoubleQuotes from "../Components/RemoveDoubleQuote";
+import { useNavigate } from "react-router-dom";
+import Login from "./Login";
 
 const ASN = () => {
   const [tcAsnId, setTcAsnId] = useState("");
@@ -10,6 +12,55 @@ const ASN = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); // Single state for success message
+  const navigate = useNavigate();
+  const expireTime = localStorage.getItem("expireTime");
+
+  useEffect(() => {
+    // console.log(localStorage.getItem("jwtToken"));
+    if (!localStorage.getItem("jwtToken")) {
+      navigate("/Login");
+    }
+  }, []);
+
+  const updateExptime = () => {
+    localStorage.setItem("expireTime", Date.now() + 10000);
+  };
+
+  const checkForInactivity = () => {
+    const expireTime = localStorage.getItem("expireTime");
+    if (expireTime < Date.now()) {
+      console.log("Inactive");
+      localStorage.removeItem("jwtToken");
+      alert("Session Time out. Please Login Again");
+      navigate("/Login");
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkForInactivity();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    updateExptime();
+
+    window.addEventListener("click", updateExptime);
+    window.addEventListener("keypress", updateExptime);
+    window.addEventListener("dblclick", updateExptime);
+    window.addEventListener("mousemove", updateExptime);
+    window.addEventListener("scroll", updateExptime);
+
+    return () => {
+      window.addEventListener("click", updateExptime);
+      window.addEventListener("keypress", updateExptime);
+      window.addEventListener("dblclick", updateExptime);
+      window.addEventListener("mousemove", updateExptime);
+      window.addEventListener("scroll", updateExptime);
+    };
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -19,14 +70,12 @@ const ASN = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:7373/fetchTcAsnId/${tcAsnId}`,
+        `http://localhost:7373/api/fetchTcAsnId/${tcAsnId}`,
         {
           headers: {
             "Content-Type": "application/json",
-            JwtToken:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUZXN0VXNlcjIiLCJpYXQiOjE2OTI2Mjc3MTMsImV4cCI6MTY5MjYzMTMxM30._jb2CaeJmI442DMMO5MuWKTn13xfKSSM44zpTba3LYw",
           },
-          withCredentials: true,
+          withCredentials: false,
         }
       );
       setData(response.data);
