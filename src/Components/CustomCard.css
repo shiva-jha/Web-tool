@@ -1,0 +1,26 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px; /* Adjust the gap between cards as needed */
+}
+
+.card {
+  flex: 1 1 calc(33.33% - 20px); /* Distribute available space evenly */
+  background-color: #b71b1b38;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  display: flex; /* Add this line */
+  flex-direction: column; 
+  width: 60%;
+}
+
+.card-content {
+  flex: 1; /* Add this line */
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
