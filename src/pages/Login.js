@@ -13,7 +13,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const LOGIN_URL = "http://localhost:7373/api/v1/auth/authenticate";
 
-localStorage.setItem("expireTime", Date.now() + 60000);
+localStorage.setItem("expireTime", Date.now() + 10000);
 
 const Login = () => {
   const userRef = useRef();
@@ -71,8 +71,12 @@ const Login = () => {
       console.log(response.data.jwtToken);
       localStorage.setItem("jwtToken", response.data.jwtToken);
       setSuccess(true);
+
       localStorage.setItem("expireTime", Date.now() + 10000);
-      navigate("/ASN");
+      localStorage.setItem("userName", userName);
+      // navigate("/ASN");
+      console.log(userName + "UserName");
+      navigate("/Home");
       //clear state and controlled inputs
       //need value attrib on inputs for this
       setUser("");
@@ -194,12 +198,7 @@ const Login = () => {
             </button>
           </form>
           <p>
-            New User? Please Sigh Up Here
-            <br />
-            <span className="line">
-              {/*put router link here*/}
-              <a href="#">Sigh Up</a>
-            </span>
+            New User? Please <a href="/Register">Sigh Up</a> Here
           </p>
         </section>
       )}

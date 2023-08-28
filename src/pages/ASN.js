@@ -23,7 +23,7 @@ const ASN = () => {
   }, []);
 
   const updateExptime = () => {
-    localStorage.setItem("expireTime", Date.now() + 1000000);
+    localStorage.setItem("expireTime", Date.now() + 30000);
   };
 
   const checkForInactivity = () => {
@@ -76,7 +76,7 @@ const ASN = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          withCredentials: false,
         }
       );
       setData(response.data);
@@ -90,7 +90,7 @@ const ASN = () => {
   const handleUnverify = () => {
     if (data[0].asn_status === 40) {
       axios
-        .post(`http://localhost:7373/UnVerifyAsn/${tcAsnId}`)
+        .post(`http://localhost:7373/UnVerifyAsn/${tcAsnId}/${jwtToken}`)
         .then((response) => {
           // Handle success
           console.log("ASN Unverified successfully");
@@ -107,7 +107,7 @@ const ASN = () => {
   const handleVerify = () => {
     if (data[0].asn_status === 30) {
       axios
-        .post(`http://localhost:7373/VerifyAsn/${tcAsnId}`)
+        .post(`http://localhost:7373/VerifyAsn/${tcAsnId}/${jwtToken}`)
         .then((response) => {
           // Handle success
           console.log("ASN Verified successfully");

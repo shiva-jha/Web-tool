@@ -17,8 +17,10 @@ import ToteInConsumed from "./pages/ToteInConsumed";
 import OlpnInPacking from "./pages/OlpnInPacking";
 import ToteInAllocAndPulled from "../src/pages/ToteInAllocAndPulled";
 import Navbar from "./Components/Navbar";
+import Register from "./pages/Register";
 
 import "./App.css";
+import Login from "./pages/Login";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -80,45 +82,24 @@ function App() {
             )} */}
           </ul>
         </nav>
-        <Navbar
+        {/* <Navbar
           userName={authenticated ? currentUser.username : ""}
           handleSignOut={handleSignOut}
-        />
+        /> */}
         <Routes>
-          <Route
-            path="/"
-            element={
-              authenticated ? (
-                <Home currentUser={currentUser} />
-              ) : (
-                <SignIn handleSignIn={handleSignIn} users={dummyUsers} />
-              )
-            }
-          />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/Home" element={<Home />} />
+          <Route path="/Register" element={<Register />} />
           {/* Protected routes */}
-          <Route
-            path="/ASN"
-            element={authenticated ? <ASN /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/TaskInAssigned"
-            element={authenticated ? <TaskInAssigned /> : <Navigate to="/" />}
-          />
+          <Route path="/ASN" element={<ASN />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/TaskInAssigned" element={<TaskInAssigned />} />
           <Route
             path="/ToteInAllocAndPulled"
-            element={
-              authenticated ? <ToteInAllocAndPulled /> : <Navigate to="/" />
-            }
+            element={<ToteInAllocAndPulled />}
           />
-          <Route
-            path="/ToteInConsumed"
-            element={authenticated ? <ToteInConsumed /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/OlpnInPacking"
-            element={authenticated ? <OlpnInPacking /> : <Navigate to="/" />}
-          />
+          <Route path="/ToteInConsumed" element={<ToteInConsumed />} />
+          <Route path="/OlpnInPacking" element={<OlpnInPacking />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </div>
     </Router>

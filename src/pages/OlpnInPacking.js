@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const OlpnInPacking = () => {
   const [tcRefLpnId, setTcRefLpnId] = useState("");
@@ -9,6 +10,55 @@ const OlpnInPacking = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [openAllocation, setOpenAllocation] = useState("");
   const [openTasks, setOpenTasks] = useState([]);
+  const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    // console.log(localStorage.getItem("jwtToken"));
+    if (!localStorage.getItem("jwtToken")) {
+      navigate("/Login");
+    }
+  }, []);
+
+  const updateExptime = () => {
+    localStorage.setItem("expireTime", Date.now() + 10000);
+  };
+
+  const checkForInactivity = () => {
+    const expireTime = localStorage.getItem("expireTime");
+    if (expireTime < Date.now()) {
+      console.log("Inactive");
+      localStorage.removeItem("jwtToken");
+      alert("Session Time out. Please Login Again");
+      navigate("/Login");
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkForInactivity();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    updateExptime();
+
+    window.addEventListener("click", updateExptime);
+    window.addEventListener("keypress", updateExptime);
+    window.addEventListener("dblclick", updateExptime);
+    window.addEventListener("mousemove", updateExptime);
+    window.addEventListener("scroll", updateExptime);
+
+    return () => {
+      window.addEventListener("click", updateExptime);
+      window.addEventListener("keypress", updateExptime);
+      window.addEventListener("dblclick", updateExptime);
+      window.addEventListener("mousemove", updateExptime);
+      window.addEventListener("scroll", updateExptime);
+    };
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -17,7 +67,6 @@ const OlpnInPacking = () => {
     setSuccessMessage("");
     setOpenAllocation("");
     setOpenTasks([]);
-    const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
 
     try {
       const response = await axios.post(
@@ -37,7 +86,7 @@ const OlpnInPacking = () => {
     if (!isLpnPacked) {
       try {
         const responseOpenAllocation = await axios.post(
-          `http://localhost:7373/checkOpenAllocationByTcReferenceLpnId/${tcRefLpnId}`
+          `http://localhost:7373/checkOpenAllocationByTcReferenceLpnId/${tcRefLpnId}/${jwtToken}`
         );
         if (Array.isArray(responseOpenAllocation.data)) {
           setOpenAllocation(responseOpenAllocation.data);
@@ -50,7 +99,7 @@ const OlpnInPacking = () => {
 
       try {
         const responseOpenTasks = await axios.post(
-          `http://localhost:7373/checkOpenAllocation/${tcRefLpnId}`
+          `http://localhost:7373/checkOpenAllocation/${tcRefLpnId}/${jwtToken}`
         );
         setOpenTasks(responseOpenTasks.data);
       } catch (error) {
@@ -61,38 +110,38 @@ const OlpnInPacking = () => {
         try {
           // Call three APIs for status checks
           const responseStatus1 = await axios.post(
-            `http://localhost:7373/checkOrderLineItemByItemId/${tcRefLpnId}`
+            `http://localhost:7373/checkOrderLineItemByItemId/${tcRefLpnId}/${jwtToken}`
           );
           const responseStatus2 = await axios.post(
-            `http://localhost:7373/checkOrderLineItemByReferenceId/${tcRefLpnId}`
+            `http://localhost:7373/checkOrderLineItemByReferenceId/${tcRefLpnId}/${jwtToken}`
           );
           const responseStatus3 = await axios.post(
-            `http://localhost:7373/checkOpenLpnDetails/${tcRefLpnId}`
+            `http://localhost:7373/checkOpenLpnDetails/${tcRefLpnId}/${jwtToken}`
           );
 
           if (responseStatus3.data.length > 0) {
             await axios.post(
-              `http://localhost:7373/updateLpnDetails/${tcRefLpnId}`
+              `http://localhost:7373/updateLpnDetails/${tcRefLpnId}/${jwtToken}`
             );
           }
           if (responseStatus1.data.length > 0) {
             await axios.post(
-              `http://localhost:7373/updateOrderLineItemUserCancelledQtyLineItemId/${tcRefLpnId}`
+              `http://localhost:7373/updateOrderLineItemUserCancelledQtyLineItemId/${tcRefLpnId}/${jwtToken}`
             );
             await axios.post(
-              `http://localhost:7373/updateOrderLineItemStatusByLineItemId/${tcRefLpnId}`
+              `http://localhost:7373/updateOrderLineItemStatusByLineItemId/${tcRefLpnId}/${jwtToken}`
             );
           }
           if (responseStatus2.data.length > 0) {
             await axios.post(
-              `http://localhost:7373/updateOrderLineItemUserCancelledQtyReferenceLineItemId/${tcRefLpnId}`
+              `http://localhost:7373/updateOrderLineItemUserCancelledQtyReferenceLineItemId/${tcRefLpnId}/${jwtToken}`
             );
             await axios.post(
-              `http://localhost:7373/updateOrderLineItemStatusByReferenceLineItemId/${tcRefLpnId}`
+              `http://localhost:7373/updateOrderLineItemStatusByReferenceLineItemId/${tcRefLpnId}/${jwtToken}`
             );
           }
           await axios.post(
-            `http://localhost:7373/updateLpnsToPackedStatus/${tcRefLpnId}`
+            `http://localhost:7373/updateLpnsToPackedStatus/${tcRefLpnId}/${jwtToken}`
           );
           setSuccessMessage("Packing completed successfully");
         } catch (error) {

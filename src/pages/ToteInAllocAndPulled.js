@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ToteInAllocaAndPulled = () => {
   const [toteNo, setToteNo] = useState("");
@@ -11,11 +12,62 @@ const ToteInAllocaAndPulled = () => {
   const [openPackingRecords, setOpenPackingRecords] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [task, setTask] = useState([]);
+  const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    // console.log(localStorage.getItem("jwtToken"));
+    if (!localStorage.getItem("jwtToken")) {
+      navigate("/Login");
+    }
+  }, []);
+
+  const updateExptime = () => {
+    localStorage.setItem("expireTime", Date.now() + 10000);
+  };
+
+  const checkForInactivity = () => {
+    const expireTime = localStorage.getItem("expireTime");
+    if (expireTime < Date.now()) {
+      console.log("Inactive");
+      localStorage.removeItem("jwtToken");
+      alert("Session Time out. Please Login Again");
+      navigate("/Login");
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkForInactivity();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    updateExptime();
+
+    window.addEventListener("click", updateExptime);
+    window.addEventListener("keypress", updateExptime);
+    window.addEventListener("dblclick", updateExptime);
+    window.addEventListener("mousemove", updateExptime);
+    window.addEventListener("scroll", updateExptime);
+
+    return () => {
+      window.addEventListener("click", updateExptime);
+      window.addEventListener("keypress", updateExptime);
+      window.addEventListener("dblclick", updateExptime);
+      window.addEventListener("mousemove", updateExptime);
+      window.addEventListener("scroll", updateExptime);
+    };
+  }, []);
 
   const fetchToteStatus = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`http://localhost:7373/fetchTcLpnId/${toteNo}`);
+      const response = await axios.post(
+        `http://localhost:7373/fetchTcLpnId/${toteNo}/${jwtToken}`
+      );
       setToteStatus(response.data);
       setShowTable(true);
       setShowClearButton(true);
@@ -29,14 +81,18 @@ const ToteInAllocaAndPulled = () => {
   const handleToteClear = async () => {
     try {
       // Check for open tasks
-      const openTaskResponse = await axios.post(`http://localhost:7373/allTaskDetails/${toteNo}`);
+      const openTaskResponse = await axios.post(
+        `http://localhost:7373/allTaskDetails/${toteNo}/${jwtToken}`
+      );
       if (openTaskResponse.data.length > 0) {
         setOpenTask(openTaskResponse.data);
         return;
       }
 
       // Check for open packing records
-      const openPackingResponse = await axios.post(`http://localhost:7373/notPacked/${toteNo}`);
+      const openPackingResponse = await axios.post(
+        `http://localhost:7373/notPacked/${toteNo}/${jwtToken}`
+      );
       setOpenPackingRecords(openPackingResponse.data);
 
       if (openPackingResponse.data.length > 0) {
@@ -44,7 +100,9 @@ const ToteInAllocaAndPulled = () => {
       }
 
       // If no open tasks or packing records, update tote status
-      await axios.post(`http://localhost:7373/UpdateTcLpnId/${toteNo}`);
+      await axios.post(
+        `http://localhost:7373/UpdateTcLpnId/${toteNo}/${jwtToken}`
+      );
       setSuccessMessage("Tote moved to consumed status successfully!");
       console.log("Tote status updated successfully!");
     } catch (error) {
@@ -61,7 +119,9 @@ const ToteInAllocaAndPulled = () => {
       return "Unknown";
     }
   };
-  const uniqueTaskIds = openTask ? Array.from(new Set(openTask.map(task => task.task_id))) : [];
+  const uniqueTaskIds = openTask
+    ? Array.from(new Set(openTask.map((task) => task.task_id)))
+    : [];
   const formattedTaskIds = uniqueTaskIds.join(", ");
   return (
     <div className="tote-container container">
@@ -81,7 +141,7 @@ const ToteInAllocaAndPulled = () => {
 
       {loading && <p className="loading-text text">Loading...</p>}
 
-      {showTable && ( 
+      {showTable && (
         <table className="table">
           <thead>
             <tr>
@@ -90,7 +150,6 @@ const ToteInAllocaAndPulled = () => {
               <th>Lpn Status</th>
               <th>Lpn FACILITY Status</th>
               <th>Tote Status</th>
-              
             </tr>
           </thead>
           <tbody>
@@ -116,13 +175,18 @@ const ToteInAllocaAndPulled = () => {
       {openTask && (
         <div className="open-task">
           <h2 className="open-task-title">Open Task for Tote {toteNo}</h2>
-          <p className="open-task-message">There is an open task with task_id: {formattedTaskIds}. Please complete the task.</p>
+          <p className="open-task-message">
+            There is an open task with task_id: {formattedTaskIds}. Please
+            complete the task.
+          </p>
         </div>
       )}
 
       {openPackingRecords.length > 0 && (
         <div className="open-packing-records">
-          <h2 className="open-packing-records-title">Open Packing Records for Tote {toteNo}</h2>
+          <h2 className="open-packing-records-title">
+            Open Packing Records for Tote {toteNo}
+          </h2>
           <table className="packing-table">
             <thead>
               <tr>
@@ -143,9 +207,7 @@ const ToteInAllocaAndPulled = () => {
       )}
 
       {successMessage && (
-        <div className="success-message">
-          {successMessage}
-        </div>
+        <div className="success-message">{successMessage}</div>
       )}
     </div>
   );

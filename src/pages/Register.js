@@ -110,8 +110,9 @@ const Register = () => {
     <div>
       {success ? (
         <section>
-          <h1>Success!</h1>
-          <p>Sign In</p>
+          <h1>
+            Registered Successfully. Please <a href="/Login">Login</a> here.
+          </h1>
         </section>
       ) : (
         <section>
@@ -319,7 +320,7 @@ const Register = () => {
             <br />
             <span className="line">
               {/*put router link here*/}
-              <a href="#">Sign In</a>
+              <a href="/Login">Login Here</a>
             </span>
           </p>
         </section>

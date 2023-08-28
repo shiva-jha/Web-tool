@@ -8,7 +8,9 @@ const SignIn = ({ handleSignIn, users }) => {
   const navigate = useNavigate();
 
   const handleSignin = () => {
-    const user = users.find((u) => u.username === username && u.password === password);
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
     if (user) {
       handleSignIn(user);
       navigate("/");
@@ -38,8 +40,12 @@ const SignIn = ({ handleSignIn, users }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button className="form-button" onClick={handleSignin}>Sign In</button>
-      <Link to="/signup" className="form-link">Don't have an account? Sign up</Link>
+      <button className="form-button" onClick={handleSignin}>
+        Sign In
+      </button>
+      <Link to="/signup" className="form-link">
+        Don't have an account? Sign up
+      </Link>
     </div>
   );
 };

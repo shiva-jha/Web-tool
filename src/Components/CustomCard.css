@@ -7,13 +7,13 @@
 
 .card {
   flex: 1 1 calc(33.33% - 20px); /* Distribute available space evenly */
-  background-color: #b71b1b38;
+  background-color: #b6acbb88;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
   display: flex; /* Add this line */
-  flex-direction: column; 
+  flex-direction: column;
   width: 60%;
 }
 

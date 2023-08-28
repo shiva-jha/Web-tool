@@ -1,10 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import CustomCard from "./CardComponent"; // Import the custom card component
 import Grid from "@mui/material/Grid"; // Import the Grid component
 import "./home.css";
+import { useNavigate } from "react-router-dom";
 
-function Home({ handleSignOut }) {
+function Home() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    // console.log(localStorage.getItem("jwtToken"));
+    if (!localStorage.getItem("jwtToken")) {
+      navigate("/Login");
+    }
+  }, []);
+
+  const updateExptime = () => {
+    localStorage.setItem("expireTime", Date.now() + 300000);
+  };
+
+  const checkForInactivity = () => {
+    const expireTime = localStorage.getItem("expireTime");
+    if (expireTime < Date.now()) {
+      console.log("Inactive");
+      localStorage.removeItem("jwtToken");
+      alert("Session Time out. Please Login Again");
+      navigate("/Login");
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkForInactivity();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    updateExptime();
+
+    window.addEventListener("click", updateExptime);
+    window.addEventListener("keypress", updateExptime);
+    window.addEventListener("dblclick", updateExptime);
+    window.addEventListener("mousemove", updateExptime);
+    window.addEventListener("scroll", updateExptime);
+
+    return () => {
+      window.addEventListener("click", updateExptime);
+      window.addEventListener("keypress", updateExptime);
+      window.addEventListener("dblclick", updateExptime);
+      window.addEventListener("mousemove", updateExptime);
+      window.addEventListener("scroll", updateExptime);
+    };
+  }, []);
+
   const cardData = [
     {
       title: "ASN Page",
@@ -17,7 +66,7 @@ function Home({ handleSignOut }) {
       link: "/ToteInConsumed",
     },
     {
-      title: "Task In AllocaAndPulled",
+      title: "Task in Allocated and Pulled",
       content: "Manage tasks .",
       link: "/ToteInAllocAndPulled",
     },
@@ -27,7 +76,7 @@ function Home({ handleSignOut }) {
       link: "/OlpnInPacking",
     },
     {
-      title: "Task In Assigned Page",
+      title: "Task in Assigned Page",
       content: "Manage tasks that got stuck in assigned state.",
       link: "/TaskInAssigned",
     },
