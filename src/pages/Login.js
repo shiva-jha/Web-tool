@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
+
 import {
   faCheck,
   faTimes,
@@ -8,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -15,10 +17,11 @@ const LOGIN_URL = "http://localhost:7373/api/v1/auth/authenticate";
 
 localStorage.setItem("expireTime", Date.now() + 10000);
 
-const Login = () => {
+const Login = ({ setAuthenticated }) => {
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
+  // const history = useHistory();
 
   const [userName, setUser] = useState("");
   const [validName, setValidName] = useState(false);
@@ -68,17 +71,20 @@ const Login = () => {
         }
       );
       console.log(response.data);
-      console.log(response.data.jwtToken);
       localStorage.setItem("jwtToken", response.data.jwtToken);
       setSuccess(true);
 
-      localStorage.setItem("expireTime", Date.now() + 10000);
+      // Set authentication status to true
+      localStorage.setItem("authenticated", "true");
       localStorage.setItem("userName", userName);
-      // navigate("/ASN");
-      console.log(userName + "UserName");
-      navigate("/Home");
-      //clear state and controlled inputs
-      //need value attrib on inputs for this
+
+      
+      // Redirect to Home after successful login
+       navigate("/Home");
+      
+  
+     
+      // Clear state and controlled inputs
       setUser("");
       setPwd("");
     } catch (err) {
@@ -93,8 +99,9 @@ const Login = () => {
     }
   };
 
+
   return (
-    <div>
+    <div className="center-container">
       {success ? (
         <section>
           <h1>Success!</h1>
@@ -198,7 +205,7 @@ const Login = () => {
             </button>
           </form>
           <p>
-            New User? Please <a href="/Register">Sigh Up</a> Here
+            New User? Please <a href="/Register">Sign Up</a> Here
           </p>
         </section>
       )}

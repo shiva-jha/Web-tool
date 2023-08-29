@@ -19,8 +19,12 @@
 
 .card-content {
   flex: 1; /* Add this line */
+  color: #fff;
 }
 
 .card:hover {
   transform: translateY(-4px);
+}
+.a{
+  color: aliceblue;
 }

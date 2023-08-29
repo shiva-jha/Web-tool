@@ -107,7 +107,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="center-container">
       {success ? (
         <section>
           <h1>

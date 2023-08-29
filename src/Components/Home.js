@@ -66,8 +66,8 @@ function Home() {
       link: "/ToteInConsumed",
     },
     {
-      title: "Task in Allocated and Pulled",
-      content: "Manage tasks .",
+      title: "Tote in Allocated and Pulled",
+      content: "Change Tote status .",
       link: "/ToteInAllocAndPulled",
     },
     {
@@ -77,7 +77,7 @@ function Home() {
     },
     {
       title: "Task in Assigned Page",
-      content: "Manage tasks that got stuck in assigned state.",
+      content: "Manage tasks .",
       link: "/TaskInAssigned",
     },
     // Add more card data objects as needed
