@@ -28,21 +28,13 @@ function App() {
     setAuthenticated(localStorage.getItem("authenticated") === "true");
   }, []);
 
-  // useEffect(() => {
-  //   // Check for presence of jwtToken in localStorage
-  //   const jwtToken = localStorage.getItem("jwtToken");
-  //   if (!jwtToken) {
-  //     // Clear authentication related data
-  //     localStorage.removeItem("authenticated");
-  //     localStorage.removeItem("userName");
-  //     setAuthenticated(false); // Update authentication status
-  //   }
-  // }, []);
+  
   
       
   
 
   return (
+   
     <Router>
       <div>
       {authenticated && <Navbar />}
@@ -69,6 +61,7 @@ function App() {
           {authenticated && (
             <>
               <Route path="/ASN" element={<ASN />} />
+              <Route path="/Home" element={<Home />} />
               <Route path="/TaskInAssigned" element={<TaskInAssigned />} />
               <Route
                 path="/ToteInAllocAndPulled"
@@ -82,6 +75,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    
   );
 }
 

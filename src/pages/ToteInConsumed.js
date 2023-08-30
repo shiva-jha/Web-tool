@@ -13,7 +13,9 @@ const ToteInConsumed = () => {
   const [showButton, setShowButton] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
-
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
   const navigate = useNavigate();
   useEffect(() => {
     // console.log(localStorage.getItem("jwtToken"));
@@ -66,7 +68,7 @@ const ToteInConsumed = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:7373/fetchTaskDtl/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/fetchTaskDtl/${toteNo}/${jwtToken}`
       );
       setData(response.data);
       setSuccessMessage([]);
@@ -85,14 +87,14 @@ const ToteInConsumed = () => {
     try {
       // Fetch open packing records from the first additional API
       const response1 = await axios.post(
-        `http://localhost:7373/checkPackedOrders/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/checkPackedOrders/${toteNo}/${jwtToken}`
       );
       setPackingRecords(response1.data);
       console.log(response1.data);
 
       // Fetch open allocation records from the second additional API
       const response2 = await axios.post(
-        `http://localhost:7373/CheckAllocation/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/CheckAllocation/${toteNo}/${jwtToken}`
       );
       setAllocationRecords(response2.data);
 
@@ -124,7 +126,7 @@ const ToteInConsumed = () => {
   const handleButtonClick = async () => {
     // Call the API to update tote status
     await axios
-      .post(`http://localhost:7373/updateTotetoAlloc/${toteNo}/${jwtToken}`)
+      .post(`${apiUrlBase}/updateTotetoAlloc/${toteNo}/${jwtToken}`)
       .then((response) => {
         // Handle success
         console.log("Tote moved to allocated and pulled");

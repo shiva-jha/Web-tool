@@ -13,7 +13,9 @@ const ToteInAllocaAndPulled = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [task, setTask] = useState([]);
   const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
-
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
   const navigate = useNavigate();
   useEffect(() => {
     // console.log(localStorage.getItem("jwtToken"));
@@ -66,7 +68,7 @@ const ToteInAllocaAndPulled = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:7373/fetchTcLpnId/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/fetchTcLpnId/${toteNo}/${jwtToken}`
       );
       setToteStatus(response.data);
       setShowTable(true);
@@ -82,7 +84,7 @@ const ToteInAllocaAndPulled = () => {
     try {
       // Check for open tasks
       const openTaskResponse = await axios.post(
-        `http://localhost:7373/allTaskDetails/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/allTaskDetails/${toteNo}/${jwtToken}`
       );
       if (openTaskResponse.data.length > 0) {
         setOpenTask(openTaskResponse.data);
@@ -91,7 +93,7 @@ const ToteInAllocaAndPulled = () => {
 
       // Check for open packing records
       const openPackingResponse = await axios.post(
-        `http://localhost:7373/notPacked/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/notPacked/${toteNo}/${jwtToken}`
       );
       setOpenPackingRecords(openPackingResponse.data);
 
@@ -101,7 +103,7 @@ const ToteInAllocaAndPulled = () => {
 
       // If no open tasks or packing records, update tote status
       await axios.post(
-        `http://localhost:7373/UpdateTcLpnId/${toteNo}/${jwtToken}`
+        `${apiUrlBase}/UpdateTcLpnId/${toteNo}/${jwtToken}`
       );
       setSuccessMessage("Tote moved to consumed status successfully!");
       console.log("Tote status updated successfully!");

@@ -1,34 +1,81 @@
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #206876c3;
-    padding: 10px 20px;
-    color: white;
-  }
-  
-  .navbar-left img {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .navbar-middle {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .navbar-middle a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .navbar-right button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .navbar-right button:hover {
-    text-decoration: underline;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-image: linear-gradient(to bottom, #206876c3, #1d5d63c3);
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar-left {
+  margin-right: 10px;
+}
+
+/* Home icon styling */
+.home-icon {
+  font-size: 30px;
+  color: #1f1919;
+}
+
+.navbar-middle {
+  display: flex;
+  gap: 20px;
+}
+.active {
+  font-weight: bold;
+}
+.dropdown-section {
+  position: relative;
+}
+
+.dropdown-section a {
+  color: white;
+  text-decoration: none;
+}
+
+
+
+.dropdown-content {
+  position: absolute;
+  background-color: #696161;
+  min-width: 160px;
+  display: none;
+  z-index: 1;
+}
+
+.dropdown-section:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  padding: 12px 16px;
+  display: block;
+  color: #333;
+  text-align: left;
+  text-decoration: none;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.signout-button {
+  background-color: #206876c3;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.signout-button:hover {
+  background-color: #1d5d63c3;
+}

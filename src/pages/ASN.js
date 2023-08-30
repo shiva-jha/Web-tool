@@ -14,7 +14,10 @@ const ASN = () => {
   const [successMessage, setSuccessMessage] = useState(""); // Single state for success message
   const navigate = useNavigate();
   const expireTime = localStorage.getItem("expireTime");
-
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
+  console.log(apiUrl);
   useEffect(() => {
     // console.log(localStorage.getItem("jwtToken"));
     if (!localStorage.getItem("jwtToken")) {
@@ -71,7 +74,7 @@ const ASN = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:7373/fetchTcAsnId/${tcAsnId}/${jwtToken}`,
+        `${apiUrlBase}/fetchTcAsnId/${tcAsnId}/${jwtToken}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -90,7 +93,7 @@ const ASN = () => {
   const handleUnverify = () => {
     if (data[0].asn_status === 40) {
       axios
-        .post(`http://localhost:7373/UnVerifyAsn/${tcAsnId}/${jwtToken}`)
+        .post(`${apiUrlBase}/UnVerifyAsn/${tcAsnId}/${jwtToken}`)
         .then((response) => {
           // Handle success
           console.log("ASN Unverified successfully");
@@ -107,7 +110,7 @@ const ASN = () => {
   const handleVerify = () => {
     if (data[0].asn_status === 30) {
       axios
-        .post(`http://localhost:7373/VerifyAsn/${tcAsnId}/${jwtToken}`)
+        .post(`${apiUrlBase}/VerifyAsn/${tcAsnId}/${jwtToken}`)
         .then((response) => {
           // Handle success
           console.log("ASN Verified successfully");
@@ -125,22 +128,27 @@ const ASN = () => {
     <div className="container">
       <h1 className="heading">Fetch ASN Data</h1>
       <div className="form-group">
-        <label className="label asnLabel">
-          Enter tc_asn_id:{" "}
-          <input
-            type="text"
-            className="input-field asnInput"
-            value={tcAsnId}
-            onChange={(e) => setTcAsnId(e.target.value)}
-          />
-        </label>
-        <button className="button asnButton" onClick={fetchData}>
-          Fetch Data
-        </button>
+        <div className="input-box">
+          <label className="label asnLabel">
+            Enter tc_asn_id:{" "}
+            <input
+              type="text"
+              className="input-field asnInput"
+              value={tcAsnId}
+              onChange={(e) => setTcAsnId(e.target.value)}
+            />
+          </label>
+          <button className="asnButton" onClick={fetchData}>
+            Fetch Data
+          </button>
+        </div>
       </div>
 
       {loading && <div className="loading">Loading...</div>}
       {error && <div className="error">{error}</div>}
+      {data.length === 0 && !loading && (
+      <div className="noDataMessage">No data found for the provided tc_asn_id.</div>
+    )}
       {data.length > 0 && (
         <div className="table-container">
           <table className="table asnTable">
@@ -188,7 +196,7 @@ const ASN = () => {
 
       {data.length > 0 && data[0].asn_status === 40 && (
         <div className="actionButtonContainer">
-          <button className="button unverifyButton" onClick={handleUnverify}>
+          <button className=" unverifyButton" onClick={handleUnverify}>
             Unverify ASN
           </button>
         </div>
@@ -196,7 +204,7 @@ const ASN = () => {
 
       {data.length > 0 && data[0].asn_status === 30 && (
         <div className="actionButtonContainer">
-          <button className="button verifyButton" onClick={handleVerify}>
+          <button className="verifyButton" onClick={handleVerify}>
             Verify ASN
           </button>
         </div>

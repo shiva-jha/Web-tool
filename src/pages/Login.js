@@ -10,18 +10,22 @@ import axios from "axios";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+// import logger from "../../logger";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const LOGIN_URL = "http://localhost:7373/api/v1/auth/authenticate";
 
-localStorage.setItem("expireTime", Date.now() + 10000);
+
 
 const Login = ({ setAuthenticated }) => {
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
   // const history = useHistory();
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
+  const LOGIN_URL = `${apiUrlBase}/api/v1/auth/authenticate`;
 
   const [userName, setUser] = useState("");
   const [validName, setValidName] = useState(false);
@@ -73,10 +77,11 @@ const Login = ({ setAuthenticated }) => {
       console.log(response.data);
       localStorage.setItem("jwtToken", response.data.jwtToken);
       setSuccess(true);
-
+      // logger.info(`User "${userName}" logged in at: ${new Date().toLocaleString()}`);
       // Set authentication status to true
       localStorage.setItem("authenticated", "true");
       localStorage.setItem("userName", userName);
+      localStorage.setItem("expireTime", Date.now() + 10000);
 
       
       // Redirect to Home after successful login
@@ -89,12 +94,16 @@ const Login = ({ setAuthenticated }) => {
       setPwd("");
     } catch (err) {
       if (!err?.response) {
+        // logger.error(`Login failed for user "${userName}": No server response`);
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
+        // logger.error(`Login failed for user "${userName}": Username taken`);
         setErrMsg("Username Taken");
       } else {
+        // logger.error(`Login failed for user "${userName}": Login Failed - ${err.message}`);
         setErrMsg("Login Failed");
       }
+     
       errRef.current.focus();
     }
   };
@@ -106,7 +115,7 @@ const Login = ({ setAuthenticated }) => {
         <section>
           <h1>Success!</h1>
           <p>
-            <a href="#">Sign In</a>
+            <a href="#" className="loginLink">Sign In</a>
           </p>
         </section>
       ) : (

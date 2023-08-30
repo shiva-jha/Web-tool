@@ -14,8 +14,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: linear-gradient(to bottom, #206876c3, #1d5d63c3);
+  background-image: linear-gradient(to bottom, #45909fc3, #71cad0c3);
   height: 100vh;
+  color: #fff;
 }
 
 .card-container {
@@ -43,14 +44,14 @@
   font-size: 18px;
   text-decoration: none;
   color: #fff;
-  background-color: #007bff;
+  background-color: #6caff7;
   border-radius: 5px;
   transition: background-color 0.3s;
   list-style: none;
 }
 
 .link:hover {
-  background-color: #0056b3;
+  background-color: #4386cd;
 }
 .heading{
   margin: 10px;

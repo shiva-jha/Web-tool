@@ -15,7 +15,7 @@ function Home() {
   }, []);
 
   const updateExptime = () => {
-    localStorage.setItem("expireTime", Date.now() + 300000);
+    localStorage.setItem("expireTime", Date.now() + 500000);
   };
 
   const checkForInactivity = () => {
@@ -23,6 +23,9 @@ function Home() {
     if (expireTime < Date.now()) {
       console.log("Inactive");
       localStorage.removeItem("jwtToken");
+      localStorage.removeItem("userName");
+
+      localStorage.removeItem("authenticated");
       alert("Session Time out. Please Login Again");
       navigate("/Login");
     }
@@ -76,8 +79,8 @@ function Home() {
       link: "/OlpnInPacking",
     },
     {
-      title: "Task in Assigned Page",
-      content: "Manage tasks .",
+      title: "Task in Assigned ",
+      content: "Manage tasks stuck in assigned state .",
       link: "/TaskInAssigned",
     },
     // Add more card data objects as needed

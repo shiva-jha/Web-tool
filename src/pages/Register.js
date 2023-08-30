@@ -10,12 +10,15 @@ import axios from "axios";
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 // const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const REGISTER_URL = "http://localhost:7373/api/v1/auth/registerUserJwt";
+
 
 const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
-
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
+  const REGISTER_URL = `${apiUrlBase}/api/v1/auth/registerUserJwt`;
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);

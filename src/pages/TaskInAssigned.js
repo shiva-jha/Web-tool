@@ -12,7 +12,9 @@ function TaskInAssigned() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const jwtToken = "Bearer " + localStorage.getItem("jwtToken");
-
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiPort = process.env.REACT_APP_API_PORT;
+  const apiUrlBase = `${apiUrl}:${apiPort}`;
   const navigate = useNavigate();
   useEffect(() => {
     // console.log(localStorage.getItem("jwtToken"));
@@ -71,12 +73,12 @@ function TaskInAssigned() {
 
     try {
       const taskHdrResponse = await axios.post(
-        `http://localhost:7373/CheckTaskIdInTaskHdr/${taskId}/${jwtToken}`
+        `${apiUrlBase}/CheckTaskIdInTaskHdr/${taskId}/${jwtToken}`
       );
       setTaskHdrResult(taskHdrResponse.data);
 
       const taskDtlResponse = await axios.post(
-        `http://localhost:7373/checkStatusInTaskDtl/${taskId}/${jwtToken}`
+        `${apiUrlBase}/checkStatusInTaskDtl/${taskId}/${jwtToken}`
       );
       setTaskDtlResult(taskDtlResponse.data);
     } catch (error) {
@@ -97,7 +99,7 @@ function TaskInAssigned() {
   // console.log(RemoveDoubleQuotes("E1 AS1 Ecom Letdown"));
   const handleReleaseTask = () => {
     axios
-      .post(`http://localhost:7373/updateTaskHdrStatus/${taskId}/${jwtToken}`)
+      .post(`${apiUrlBase}/updateTaskHdrStatus/${taskId}/${jwtToken}`)
       .then((response) => {
         // Handle success
         console.log("Task moved to Released status successfully");
@@ -110,7 +112,7 @@ function TaskInAssigned() {
       });
   };
   return (
-    <div className="container task-in-assigned-container">
+    <div className=" task-in-assigned-container">
       <h1 className="heading">Task Fetcher</h1>
       <input
         type="text"
